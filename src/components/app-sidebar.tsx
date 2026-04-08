@@ -1,4 +1,7 @@
-import { NavLink, useLocation } from "react-router-dom"
+"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
   Sidebar,
   SidebarContent,
@@ -24,7 +27,7 @@ const items = [
 ]
 
 export function AppSidebar() {
-  const location = useLocation()
+  const pathname = usePathname()
 
   return (
     <Sidebar>
@@ -38,7 +41,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton isActive={location.pathname.startsWith(item.url)} render={<NavLink to={item.url} />}>
+                  <SidebarMenuButton isActive={pathname.startsWith(item.url)} render={<Link href={item.url} />}>
                     <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

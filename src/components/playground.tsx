@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
@@ -11,7 +13,8 @@ interface PlaygroundProps {
   code: string
   customCode?: string
   controls?: React.ReactNode
-  children: React.ReactNode
+  codeReplacements?: Record<string, string>
+  children?: React.ReactNode
 }
 
 function getContrastForeground(hex: string) {
@@ -56,7 +59,7 @@ function CopyCodeBlock({ code }: { code: string }) {
   )
 }
 
-export function Playground({ title, description, code, customCode, controls, children }: PlaygroundProps) {
+export function Playground({ title, description, code, customCode, controls, codeReplacements, children }: PlaygroundProps) {
   const [radius, setRadius] = React.useState(0.625)
   const [themeColor, setThemeColor] = React.useState("#ffffff")
   
@@ -86,7 +89,7 @@ export function Playground({ title, description, code, customCode, controls, chi
     "--card-active-scale": activeScale,
     "--card-ring-thickness": `${ringThickness === 0 ? 0 : ringThickness + 1}px`,
     "--card-padding": `${cardPadding}rem`,
-    ...(controls ? (props as any).codeReplacements : {})
+    ...(controls && codeReplacements ? codeReplacements : {})
   } as React.CSSProperties
 
   const processCode = (rawCode: string) => {
@@ -99,7 +102,7 @@ export function Playground({ title, description, code, customCode, controls, chi
       .replace(/var\(--card-ring-thickness,[^)]+\)/g, `${ringThickness === 0 ? 0 : ringThickness + 1}px`)
       .replace(/var\(--card-padding,[^)]+\)/g, `${cardPadding}rem`)
 
-    const replacements = (props as any).codeReplacements as Record<string, string>
+    const replacements = codeReplacements
     if (replacements) {
       for (const [key, value] of Object.entries(replacements)) {
         // Find exact var assignments matching the key to replace them entirely with the value
